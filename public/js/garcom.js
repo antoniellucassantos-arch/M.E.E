@@ -48,7 +48,7 @@ async function sair() {
   token.apagar();
   app.garcom = null;
   // Volta ao portal: de lá dá para entrar como cliente ou logar de novo.
-  location.href = '/';
+  location.href = 'index.html';
 }
 
 /* --------------------------------------------------------------- dados */

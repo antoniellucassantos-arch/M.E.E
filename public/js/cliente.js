@@ -500,7 +500,7 @@ async function mostrarEscolhaDeMesa(mensagemDeErro = null) {
     .map((m) => {
       const aberta = m.status === 'ocupada';
       return `
-      <a class="escolha${aberta ? ' aberta' : ''}" href="/cliente?mesa=${m.numero}">
+      <a class="escolha${aberta ? ' aberta' : ''}" href="cliente.html?mesa=${m.numero}">
         <span class="num-escolha">${String(m.numero).padStart(2, '0')}</span>
         <span class="lugares-escolha">${m.lugares} lugares</span>
         <span class="tag ${aberta ? 'tag-ocupada' : 'tag-livre'}">
