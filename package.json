@@ -1,0 +1,14 @@
+{
+  "name": "mee-gastronomia",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema de mesas com cartão virtual recarregável: interface do garçom e interface do cliente.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "reset": "node -e \"require('node:fs').rmSync('data', {recursive:true, force:true}); console.log('banco apagado — rode npm start para recriar')\""
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

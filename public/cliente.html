@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sua mesa — M.E.E. Gastronomia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bakbak+One&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍜</text></svg>" />
+</head>
+<body>
+
+<header class="topo">
+  <a class="marca" href="/">M.E.E.<span class="ponto">·</span>Gastronomia</a>
+  <span class="cargo">Cliente</span>
+  <span class="espaco"></span>
+  <span class="usuario" id="rotuloMesa"></span>
+</header>
+
+<!-- Tela de entrada: escolher a mesa numa grade -------------------------- -->
+<main class="pagina" id="telaEntrada" hidden>
+  <div style="text-align:center;margin-bottom:6px">
+    <div style="font-size:48px">🪑</div>
+    <h2 style="color:var(--matcha);margin:6px 0 4px;font-size:28px">Em qual mesa você está?</h2>
+    <p style="color:var(--tinta-suave);font-size:14px;margin:0 auto;max-width:460px;line-height:1.5">
+      Toque na sua mesa. O número dela é o número do seu cartão — o garçom precisa
+      abrir a mesa antes de você recarregar.
+    </p>
+  </div>
+
+  <div id="erroEntrada" style="max-width:460px;margin:14px auto 0"></div>
+
+  <div class="legenda-mesas">
+    <span><i class="bolinha livre"></i> Aguardando o garçom abrir</span>
+    <span><i class="bolinha aberta"></i> Aberta, pode entrar</span>
+  </div>
+
+  <div class="grade-escolha" id="gradeEscolha"></div>
+</main>
+
+<!-- Tela principal --------------------------------------------------------- -->
+<main class="pagina pagina-estreita" id="telaMesa" hidden>
+
+  <div class="barra-voltar">
+    <a class="btn btn-p btn-vazio" href="/cliente">← Trocar de mesa</a>
+    <span class="quem-esta" id="quemEsta"></span>
+  </div>
+
+  <!-- Cartão virtual -->
+  <section class="cartao-virtual" id="cartaoVirtual">
+    <div class="rotulo">Cartão da mesa</div>
+    <div class="numero" id="numeroCartao">— — —</div>
+    <div class="rotulo">Saldo disponível</div>
+    <div class="saldo" id="saldoCartao">R$ 0,00</div>
+    <div class="rodape">
+      <div>
+        <div class="rotulo">Consumo</div>
+        <div id="consumoCartao" style="font-weight:600">R$ 0,00</div>
+      </div>
+      <div style="text-align:right">
+        <div class="rotulo">Situação</div>
+        <div id="situacaoCartao" style="font-weight:600">—</div>
+      </div>
+    </div>
+  </section>
+
+  <button class="btn btn-bloco" id="btnPedirRecarga" style="margin-top:14px">
+    💰 Recarregar cartão
+  </button>
+
+  <div id="avisoMesa" style="margin-top:14px"></div>
+
+  <!-- Navegação -->
+  <nav class="abas" style="margin-top:18px">
+    <button class="aba ativa" data-painel="cardapio">Cardápio</button>
+    <button class="aba" data-painel="pedidos">Meus pedidos <span id="contaPedidos"></span></button>
+    <button class="aba" data-painel="extrato">Extrato</button>
+  </nav>
+
+  <!-- Painel: cardápio -->
+  <section id="painelCardapio">
+    <div class="abas" id="categorias"></div>
+    <div class="lista-itens" id="listaItens"></div>
+  </section>
+
+  <!-- Painel: pedidos -->
+  <section id="painelPedidos" hidden>
+    <div id="listaPedidos"></div>
+  </section>
+
+  <!-- Painel: extrato -->
+  <section id="painelExtrato" hidden>
+    <div class="cartao">
+      <ul class="extrato" id="listaExtrato"></ul>
+    </div>
+  </section>
+</main>
+
+<!-- Barra do carrinho ------------------------------------------------------ -->
+<div class="barra-fixa" id="barraCarrinho">
+  <div class="resumo">
+    <div class="qtd" id="resumoQtd">0 itens</div>
+    <div class="total" id="resumoTotal">R$ 0,00</div>
+  </div>
+  <button class="btn btn-vazio btn-p" id="btnLimpar" style="color:var(--cream);border-color:var(--cream);box-shadow:0 3px 0 rgba(0,0,0,.3)">Limpar</button>
+  <button class="btn" id="btnRevisar">Ver pedido</button>
+</div>
+
+<!-- Modal de confirmação --------------------------------------------------- -->
+<div class="fundo-modal" id="modalPedido">
+  <div class="modal">
+    <div class="cabeca-modal">
+      <h2>Confirmar pedido</h2>
+      <button class="fechar" onclick="fecharModal('modalPedido')" aria-label="Fechar">×</button>
+    </div>
+    <ul class="extrato" id="revisaoItens"></ul>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0;padding-top:12px;border-top:3px dashed rgba(2,56,32,.2)">
+      <span class="display" style="font-size:18px;color:var(--matcha)">Total</span>
+      <span class="display" style="font-size:26px;color:var(--ember)" id="revisaoTotal">R$ 0,00</span>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:14px">
+      <span>Saldo depois do pedido</span>
+      <b id="revisaoSaldo">R$ 0,00</b>
+    </div>
+
+    <label class="campo" for="campoObs">Observação para a cozinha (opcional)</label>
+    <textarea id="campoObs" rows="2" maxlength="300"
+              placeholder="Ex.: sem cebolinha, ponto da carne, alergias..."></textarea>
+
+    <div id="erroPedido" style="margin-top:14px"></div>
+
+    <button class="btn btn-ember btn-bloco" id="btnEnviar" style="margin-top:14px">
+      Enviar pedido e debitar do cartão
+    </button>
+  </div>
+</div>
+
+<!-- Modal de boas-vindas: quem é a pessoa e em que mesa ela está ----------- -->
+<div class="fundo-modal" id="modalNome" data-obrigatorio="1">
+  <div class="modal" style="max-width:440px">
+    <div class="boas-vindas">
+      <div class="mesa-gigante" id="mesaGigante">00</div>
+      <div class="rotulo-mesa">Você está na mesa</div>
+    </div>
+
+    <h2 style="color:var(--matcha);text-align:center;margin:18px 0 6px">Como podemos te chamar?</h2>
+    <p style="color:var(--tinta-suave);font-size:13.5px;text-align:center;margin-top:0;line-height:1.5">
+      Seu nome aparece junto dos seus pedidos, para o garçom saber quem chamou.
+    </p>
+
+    <form id="formNome" onsubmit="return false" style="margin-top:16px">
+      <input id="campoNome" maxlength="40" required autocomplete="given-name"
+             placeholder="Seu nome" style="text-align:center;font-size:19px" />
+      <div id="erroNome"></div>
+      <button class="btn btn-ember btn-bloco" type="submit" style="margin-top:14px">
+        Entrar na mesa
+      </button>
+    </form>
+
+    <a class="btn btn-p btn-vazio btn-bloco" href="/cliente" style="margin-top:10px">
+      ← Não é esta mesa
+    </a>
+  </div>
+</div>
+
+<!-- Modal de recarga ------------------------------------------------------- -->
+<div class="fundo-modal" id="modalRecarga">
+  <div class="modal">
+    <div class="cabeca-modal">
+      <h2>Recarregar cartão</h2>
+      <button class="fechar" onclick="fecharModal('modalRecarga')" aria-label="Fechar">×</button>
+    </div>
+
+    <div class="aviso aviso-atencao">
+      Escolha quanto quer colocar no cartão da mesa. O garçom vem até você,
+      recebe o pagamento e libera o valor — o saldo entra na hora em que ele confirmar.
+    </div>
+
+    <label class="campo">Valor</label>
+    <div class="valores-rapidos" id="valoresRecarga"></div>
+
+    <div class="linha-campos">
+      <div>
+        <label class="campo" for="recargaOutro">Outro valor</label>
+        <input id="recargaOutro" placeholder="R$ 0,00" inputmode="decimal" />
+      </div>
+      <div>
+        <label class="campo" for="recargaForma">Como vai pagar</label>
+        <select id="recargaForma">
+          <option value="dinheiro">Dinheiro</option>
+          <option value="pix">Pix</option>
+          <option value="débito">Débito</option>
+          <option value="crédito">Crédito</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="erroRecarga" style="margin-top:14px"></div>
+
+    <button class="btn btn-ember btn-bloco" id="btnEnviarRecarga" style="margin-top:14px">
+      Chamar o garçom para liberar
+    </button>
+  </div>
+</div>
+
+<script src="/js/comum.js"></script>
+<script src="/js/cliente.js"></script>
+</body>
+</html>

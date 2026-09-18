@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>M.E.E. Gastronomia — Sistema de Mesas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bakbak+One&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍜</text></svg>" />
+<style>
+  .capa {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 30px 16px 60px;
+  }
+  .capa-interna { width: 100%; max-width: 860px; text-align: center; }
+  .logo-grande {
+    font-family: var(--display);
+    font-size: clamp(42px, 9vw, 86px);
+    color: var(--matcha);
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .logo-grande em { font-style: normal; color: var(--ember); }
+  .subtitulo {
+    font-size: 15px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    margin: 12px 0 34px;
+    font-weight: 600;
+  }
+  .portas { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; text-align: left; }
+  .porta {
+    background: #fff;
+    border: var(--borda);
+    border-radius: 22px;
+    padding: 26px 22px;
+    box-shadow: var(--sombra);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .porta:hover { transform: translateY(-4px); box-shadow: 0 12px 0 rgba(2,56,32,.16); }
+  .porta .icone { font-size: 46px; line-height: 1; }
+  .porta h2 { font-size: 26px; color: var(--matcha); }
+  .porta p { margin: 0; font-size: 14px; color: var(--tinta-suave); line-height: 1.5; flex: 1; }
+  .porta.destaque { background: var(--cream); border-color: var(--ember); }
+  .rodape-capa { margin-top: 30px; font-size: 13px; color: var(--tinta-suave); line-height: 1.7; }
+  .rodape-capa code {
+    background: var(--cream);
+    border: 2px solid var(--matcha);
+    padding: 1px 7px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: var(--matcha);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="capa">
+  <div class="capa-interna">
+    <div class="logo-grande">M.E.E. <em>Gastronomia</em></div>
+    <div class="subtitulo">Cartão da mesa · Pedido na mesa</div>
+
+    <div class="portas">
+      <div class="porta destaque">
+        <div class="icone">🍜</div>
+        <h2>Sou cliente</h2>
+        <p>
+          Escolha a sua mesa na tela seguinte — o número dela é o número do seu cartão
+          virtual. Veja o saldo, monte seu pedido e acompanhe tudo pelo celular.
+        </p>
+        <a class="btn btn-ember btn-bloco" href="/cliente">Escolher minha mesa</a>
+      </div>
+
+      <div class="porta">
+        <div class="icone">🧑‍🍳</div>
+        <h2>Sou garçom</h2>
+        <p>
+          Abra e feche mesas, recarregue os cartões dos clientes, acompanhe a fila
+          de pedidos e veja o extrato de cada mesa.
+        </p>
+        <a class="btn btn-matcha btn-bloco" href="/garcom">Área do garçom</a>
+      </div>
+    </div>
+
+    <div class="rodape-capa">
+      Cada mesa tem um cartão fixo: <b>número do cartão = número da mesa</b>.<br />
+      Acesso direto pelo celular do cliente: <code>/cliente?mesa=7</code> — ideal para colar um QR Code na mesa.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

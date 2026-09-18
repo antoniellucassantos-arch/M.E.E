@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Área do garçom — M.E.E. Gastronomia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bakbak+One&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧑‍🍳</text></svg>" />
+</head>
+<body>
+
+<header class="topo">
+  <a class="marca" href="/">M.E.E.<span class="ponto">·</span>Gastronomia</a>
+  <span class="cargo">Garçom</span>
+  <span class="espaco"></span>
+  <span class="usuario" id="nomeGarcom"></span>
+  <button class="btn btn-p btn-vazio" id="btnSair" hidden
+          style="color:var(--cream);border-color:var(--cream);box-shadow:0 3px 0 rgba(0,0,0,.35)">Sair</button>
+</header>
+
+<!-- Login ------------------------------------------------------------------ -->
+<main class="pagina pagina-estreita" id="telaLogin" hidden>
+  <div class="cartao" style="max-width:420px;margin:40px auto;text-align:center">
+    <div style="font-size:52px">🔐</div>
+    <h2 style="color:var(--matcha);margin:10px 0 6px">Área do garçom</h2>
+    <p style="color:var(--tinta-suave);font-size:14px;margin-top:0">Digite seu PIN de acesso.</p>
+    <form id="formLogin" style="margin-top:16px">
+      <input type="password" id="campoPin" inputmode="numeric" maxlength="8" required
+             placeholder="••••" autocomplete="current-password"
+             style="text-align:center;font-family:var(--display);font-size:28px;letter-spacing:10px" />
+      <div id="erroLogin"></div>
+      <button class="btn btn-ember btn-bloco" type="submit" style="margin-top:14px">Entrar</button>
+    </form>
+    <p style="font-size:12px;color:var(--tinta-suave);margin-bottom:0;margin-top:16px">
+      PINs de teste: <b>1234</b> (Ester) · <b>4321</b> (Lucas)
+    </p>
+    <a class="btn btn-p btn-vazio" href="/" style="margin-top:16px">← Voltar ao início</a>
+  </div>
+</main>
+
+<!-- Painel ----------------------------------------------------------------- -->
+<main class="pagina" id="telaPainel" hidden>
+
+  <section class="painel-numeros" id="numerosSalao"></section>
+
+  <!-- Recargas que os clientes pediram e esperam liberação -->
+  <section id="blocoRecargas" class="secao" hidden>
+    <h2>💰 Recargas aguardando você</h2>
+    <div class="grade-recargas" id="listaRecargas"></div>
+  </section>
+
+  <nav class="abas" style="margin-top:22px">
+    <button class="aba ativa" data-painel="mesas">Mesas</button>
+    <button class="aba" data-painel="fila">Fila de pedidos <span id="contaFila"></span></button>
+    <button class="aba" data-painel="cardapio">Cardápio</button>
+  </nav>
+
+  <!-- Mesas -->
+  <section id="painelMesas">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--tinta-suave)">
+        O número da mesa é o número do cartão. Toque numa mesa para recarregar ou ver a conta.
+      </span>
+      <span style="flex:1"></span>
+      <button class="btn btn-p btn-vazio" id="btnNovaMesa">+ Nova mesa</button>
+    </div>
+    <div class="grade-mesas" id="gradeMesas"></div>
+  </section>
+
+  <!-- Fila -->
+  <section id="painelFila" hidden>
+    <div id="listaFila"></div>
+  </section>
+
+  <!-- Cardápio -->
+  <section id="painelCardapio" hidden>
+    <div class="cartao" style="margin-bottom:16px">
+      <h3 style="color:var(--matcha);margin-bottom:12px">Adicionar item ao cardápio</h3>
+      <form id="formItem">
+        <div class="linha-campos">
+          <div style="flex:2">
+            <label class="campo" for="itemNome">Nome</label>
+            <input id="itemNome" required maxlength="60" placeholder="Ex.: Lámen do dia" />
+          </div>
+          <div>
+            <label class="campo" for="itemPreco">Preço</label>
+            <input id="itemPreco" required placeholder="39,90" inputmode="decimal" />
+          </div>
+        </div>
+        <div class="linha-campos" style="margin-top:10px">
+          <div>
+            <label class="campo" for="itemCategoria">Categoria</label>
+            <input id="itemCategoria" list="listaCategorias" placeholder="Lámen" />
+            <datalist id="listaCategorias"></datalist>
+          </div>
+          <div style="max-width:110px">
+            <label class="campo" for="itemEmoji">Emoji</label>
+            <input id="itemEmoji" maxlength="4" placeholder="🍜" style="text-align:center;font-size:20px" />
+          </div>
+          <div style="flex:2">
+            <label class="campo" for="itemDescricao">Descrição</label>
+            <input id="itemDescricao" maxlength="120" placeholder="Ingredientes principais" />
+          </div>
+        </div>
+        <button class="btn btn-matcha" type="submit" style="margin-top:14px">Adicionar ao cardápio</button>
+      </form>
+    </div>
+    <div class="lista-itens" id="listaCardapio"></div>
+  </section>
+</main>
+
+<!-- Modal da mesa ---------------------------------------------------------- -->
+<div class="fundo-modal" id="modalMesa">
+  <div class="modal">
+    <div class="cabeca-modal">
+      <h2 id="tituloMesa">Mesa</h2>
+      <button class="fechar" onclick="fecharModal('modalMesa')" aria-label="Fechar">×</button>
+    </div>
+
+    <div class="cartao-virtual" id="cartaoMesa">
+      <div class="rotulo">Cartão da mesa</div>
+      <div class="numero" id="mesaNumeroCartao">0000</div>
+      <div class="rotulo">Saldo disponível</div>
+      <div class="saldo" id="mesaSaldo">R$ 0,00</div>
+      <div class="rodape">
+        <div><div class="rotulo">Consumo</div><div id="mesaConsumo" style="font-weight:600">R$ 0,00</div></div>
+        <div style="text-align:right"><div class="rotulo">Aberta</div><div id="mesaAberta" style="font-weight:600">—</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-p" id="btnAbrirMesa">Abrir mesa</button>
+      <button class="btn btn-p btn-ember" id="btnFecharMesa">Fechar mesa</button>
+      <a class="btn btn-p btn-vazio" id="linkCliente" target="_blank" rel="noopener">Abrir tela do cliente ↗</a>
+    </div>
+
+    <!-- Recarga -->
+    <div class="secao">
+      <h2 style="font-size:17px">Recarregar cartão</h2>
+      <div class="valores-rapidos" id="valoresRapidos"></div>
+      <div class="linha-campos">
+        <div>
+          <label class="campo" for="campoValor">Outro valor</label>
+          <input id="campoValor" placeholder="R$ 0,00" inputmode="decimal" />
+        </div>
+        <div>
+          <label class="campo" for="campoForma">Forma de pagamento</label>
+          <select id="campoForma">
+            <option value="dinheiro">Dinheiro</option>
+            <option value="pix">Pix</option>
+            <option value="débito">Débito</option>
+            <option value="crédito">Crédito</option>
+          </select>
+        </div>
+      </div>
+      <div id="erroRecarga" style="margin-top:12px"></div>
+      <button class="btn btn-bloco" id="btnRecarregar" style="margin-top:12px">Confirmar recarga</button>
+    </div>
+
+    <!-- Pedidos da mesa -->
+    <div class="secao">
+      <h2 style="font-size:17px">Pedidos da mesa</h2>
+      <div id="pedidosDaMesa"></div>
+    </div>
+
+    <!-- Extrato -->
+    <div class="secao">
+      <h2 style="font-size:17px">Extrato do cartão</h2>
+      <div class="cartao"><ul class="extrato" id="extratoDaMesa"></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal nova mesa -------------------------------------------------------- -->
+<div class="fundo-modal" id="modalNovaMesa">
+  <div class="modal" style="max-width:420px">
+    <div class="cabeca-modal">
+      <h2>Nova mesa</h2>
+      <button class="fechar" onclick="fecharModal('modalNovaMesa')" aria-label="Fechar">×</button>
+    </div>
+    <form id="formNovaMesa">
+      <div class="linha-campos">
+        <div>
+          <label class="campo" for="novaNumero">Número (= cartão)</label>
+          <input id="novaNumero" type="number" min="1" max="999" required />
+        </div>
+        <div>
+          <label class="campo" for="novaLugares">Lugares</label>
+          <input id="novaLugares" type="number" min="1" max="30" value="4" />
+        </div>
+      </div>
+      <div id="erroNovaMesa" style="margin-top:12px"></div>
+      <button class="btn btn-matcha btn-bloco" type="submit" style="margin-top:14px">Criar mesa</button>
+    </form>
+  </div>
+</div>
+
+<script src="/js/comum.js"></script>
+<script src="/js/garcom.js"></script>
+</body>
+</html>
